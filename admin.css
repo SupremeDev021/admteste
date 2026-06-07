@@ -66,6 +66,7 @@ h1 { margin-bottom: 8px; font-size: clamp(1.55rem, 2.6vw, 2.4rem); line-height: 
 h2 { font-size: 1rem; margin-bottom: 10px; }
 .muted { color: var(--muted); line-height: 1.6; }
 .stack { display: flex; flex-direction: column; gap: 16px; }
+.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
 .field { display: flex; flex-direction: column; gap: 8px; color: var(--soft); font-size: 0.84rem; font-weight: 700; }
 input, textarea, select {
   width: 100%;

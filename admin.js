@@ -279,6 +279,8 @@ function openCompanyModal(id) {
       <div class="form-row">${inputField("responsible", "Responsavel", company?.responsible)}${inputField("document", "Documento fiscal", company?.document)}</div>
       <div class="form-row">${selectField("planId", "Plano", platform.plans.map(plan => ({ value: plan.id, label: plan.name })), company?.planId)}${inputField("monthly", "Mensalidade", company?.monthly || 0, "number")}${inputField("setup", "Setup", company?.setup || 0, "number")}</div>
       <div class="form-row">${selectField("status", "Status", ["active", "suspended", "cancelled"], company?.status || "active")}${inputField("licenseDue", "Vencimento da licenca", company?.license?.dueDate || "", "date")}</div>
+      <div class="panel"><h2>Dashboard principal</h2><div class="form-row">${selectField("dashboardMode", "Visao da Home", [{ value: "both", label: "Leads e Agenda" }, { value: "leads", label: "Somente Leads" }, { value: "agenda", label: "Somente Agenda" }, { value: "none", label: "Desativar ambos" }], company?.dashboardConfig?.mode || "both")}${inputField("instanceName", "Nome da instancia", company?.instance?.name || company?.instanceName || "", "text")}</div></div>
+      <div class="panel"><h2>Dados da instancia</h2><div class="form-row">${inputField("instanceId", "ID da instancia", company?.instance?.id || "", "text")}${inputField("instanceUrl", "URL da instancia", company?.instance?.url || "", "url")}</div><div class="form-row">${inputField("instanceToken", "Token", company?.instance?.token || "", "text")}${selectField("instanceIntegration", "Integracao utilizada", ["Evolution API", "Z-API", "WPPConnect", "UltraMsg", "Outra"], company?.instance?.integration || "Evolution API")}</div></div>
       <div class="panel"><h2>Modulos liberados</h2><div class="settings-grid">${moduleChecks}</div></div>
       <footer><button class="btn ghost" type="button" data-close-modal>Cancelar</button><button class="btn primary" type="submit">${icon("save")} Salvar</button></footer>
     </form>
@@ -296,7 +298,15 @@ function openCompanyModal(id) {
       modules,
       monthly: Number(data.monthly) || 0,
       setup: Number(data.setup) || 0,
-      license: { status: data.licenseDue && new Date(data.licenseDue) < new Date() ? "expired" : "active", dueDate: data.licenseDue || null }
+      license: { status: data.licenseDue && new Date(data.licenseDue) < new Date() ? "expired" : "active", dueDate: data.licenseDue || null },
+      dashboardConfig: { ...(company?.dashboardConfig || defaultDashboardConfig()), mode: data.dashboardMode || "both" },
+      instance: {
+        name: data.instanceName || "",
+        id: data.instanceId || "",
+        url: data.instanceUrl || "",
+        token: data.instanceToken || "",
+        integration: data.instanceIntegration || "Evolution API"
+      }
     });
     payload.users = payload.users?.length ? payload.users : [ownerUser(payload)];
     try {
@@ -547,11 +557,23 @@ function defaultRoles() {
   };
 }
 
+function defaultDashboardConfig() {
+  return {
+    mode: "both",
+    visibleKinds: { kpi: true, chart: true, table: true, ranking: true, calendar: true },
+    order: ["appointments_overview", "leads_overview", "conversations_overview", "tasks_overview", "goals_overview", "revenue_overview"],
+    hiddenWidgets: []
+  };
+}
+
 function emptyCompanyData() {
   return {
     conversations: [],
+    leads: [],
     pipelines: [],
     appointments: [],
+    tasks: [],
+    crmRoutingRules: [],
     management: { categories: [], indicators: [], reports: [], goals: [], processes: [] },
     automations: [],
     dashboardWidgets: []
@@ -631,8 +653,10 @@ function companyFromSupabase(row, panel = {}) {
     users: panel.users || [],
     rbac: panel.rbac || platform.roles,
     brand: panel.brand || {},
+    dashboardConfig: panel.dashboardConfig || defaultDashboardConfig(),
     createdAt: row.criado_em || panel.createdAt || nowIso(),
-    instanceName: row.nome_instancia || panel.instanceName || ""
+    instanceName: row.nome_instancia || panel.instance?.name || panel.instanceName || "",
+    instance: panel.instance || { name: row.nome_instancia || "", id: "", url: "", token: "", integration: "Evolution API" }
   };
   company.users = company.users.length ? company.users : [ownerUser(company)];
   return company;
@@ -648,7 +672,7 @@ function companyToSupabase(company) {
     status: toSupabaseStatus(company.status),
     valor_mensalidade: Number(company.monthly || 0),
     valor_implantacao: Number(company.setup || 0),
-    nome_instancia: company.instanceName || company.name
+    nome_instancia: company.instance?.name || company.instanceName || company.name
   };
 }
 
@@ -663,6 +687,8 @@ function panelDataFromCompany(company) {
     rbac: company.rbac || platform.roles,
     data: company.data || emptyCompanyData(),
     brand: company.brand || {},
+    dashboardConfig: company.dashboardConfig || defaultDashboardConfig(),
+    instance: company.instance || { name: company.instanceName || "", id: "", url: "", token: "", integration: "Evolution API" },
     audit: platform.audit.filter(item => item.companyId === company.id),
     notifications: platform.notifications.filter(item => item.companyId === company.id),
     updatedAt: nowIso()
