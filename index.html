@@ -1,158 +1,145 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuperAdmin | Supreme-Tech Master</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    
-    <link rel="stylesheet" href="adminstyle.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Painel Administrativo Supreme Tech para controle SaaS, empresas, planos, modulos, licencas e auditoria.">
+  <meta name="theme-color" content="#070b16">
+  <title>Supreme Tech | Painel Administrativo</title>
+  <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-
-    <!-- TELA DE LOGIN MASTER -->
-    <div id="login-admin">
-        <div id="led-background">
-            <div class="led-line" style="left: 20%;"><div class="led-light" style="animation-delay: 1s; animation-duration: 3s;"></div></div>
-            <div class="led-line" style="left: 50%;"><div class="led-light gold" style="animation-delay: 0s; animation-duration: 4s;"></div></div>
-            <div class="led-line" style="left: 80%;"><div class="led-light" style="animation-delay: 2s; animation-duration: 2.5s;"></div></div>
-        </div>
-
-        <div class="admin-box">
-            <img src="somente o logo.jpg" alt="Supreme-Tech Logo" class="logo-login" onerror="this.style.display='none'">
-            <h2>Nível Master</h2>
-            <p>Acesso Restrito - Supreme-Tech</p>
-            <form id="form-login" onsubmit="entrarAdmin(event)">
-                <input type="password" id="admin-senha" class="form-control" placeholder="Senha Mestra" required>
-                <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Acessar Central</button>
-            </form>
-            <div id="erro-login" class="error-msg">Acesso Negado. Senha incorreta.</div>
-        </div>
+  <section id="admin-auth" class="auth-screen">
+    <div class="auth-panel">
+      <div class="brand-mark">ST</div>
+      <p class="eyebrow">Supreme Tech Master</p>
+      <h1>Administracao SaaS</h1>
+      <p id="setup-hint" class="muted">Configure a senha master no primeiro acesso deste ambiente.</p>
+      <form id="admin-login-form" class="stack">
+        <label class="field">Senha master
+          <input id="admin-password" type="password" autocomplete="current-password" required>
+        </label>
+        <button class="btn primary" type="submit"><span data-icon="shield-check"></span> Acessar</button>
+        <p id="admin-login-message" class="form-message"></p>
+      </form>
     </div>
+  </section>
 
-    <!-- PAINEL ADMIN PANEL -->
-    <div id="admin-panel">
-        <div class="sidebar">
-            <div class="logo-area-sidebar">
-                <img src="somente o logo.jpg" alt="Logo" class="logo-sidebar" onerror="this.style.display='none'">
-                <span>SuperAdmin</span>
-            </div>
-            <p class="menu-tag">CONTROLE GERAL</p>
-            <div class="menu-item active" onclick="navegarAdmin('sec-visao', this)">📊 Visão Geral</div>
-            <div class="menu-item" onclick="navegarAdmin('sec-clientes', this)">👥 Gerenciar Clientes</div>
-            <div class="menu-item" onclick="navegarAdmin('sec-novo', this)">➕ Cadastrar Cliente</div>
+  <div id="admin-shell" class="admin-shell" hidden>
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark small">ST</div>
+        <div><strong>Supreme Tech</strong><span>Admin Enterprise</span></div>
+      </div>
+      <nav id="admin-menu" class="sidebar-menu">
+        <button data-section="dashboard" class="active" type="button"><span data-icon="layout-dashboard"></span><span>Dashboard</span></button>
+        <button data-section="companies" type="button"><span data-icon="building-2"></span><span>Empresas</span></button>
+        <button data-section="plans" type="button"><span data-icon="badge-dollar-sign"></span><span>Planos</span></button>
+        <button data-section="modules" type="button"><span data-icon="blocks"></span><span>Marketplace</span></button>
+        <button data-section="rbac" type="button"><span data-icon="users-round"></span><span>RBAC</span></button>
+        <button data-section="finance" type="button"><span data-icon="chart-no-axes-combined"></span><span>Financeiro</span></button>
+        <button data-section="audit" type="button"><span data-icon="list-checks"></span><span>Auditoria</span></button>
+        <button data-section="security" type="button"><span data-icon="lock-keyhole"></span><span>Seguranca</span></button>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="admin-logout" class="icon-button danger" type="button" title="Sair"><span data-icon="log-out"></span></button>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <section id="section-dashboard" class="module active">
+        <header class="module-header">
+          <div>
+            <p class="eyebrow">Executive Command Center</p>
+            <h1>Dashboard administrativo</h1>
+            <p class="muted">Indicadores calculados somente a partir de empresas, planos e assinaturas reais cadastrados.</p>
+          </div>
+          <button id="refresh-dashboard" class="btn secondary" type="button"><span data-icon="refresh-cw"></span> Atualizar</button>
+        </header>
+        <div id="admin-kpis" class="dashboard-grid"></div>
+        <div class="analytics-layout">
+          <article class="panel">
+            <div class="panel-heading"><div><p class="eyebrow">Receita</p><h2>MRR por plano</h2></div><span data-icon="chart-column"></span></div>
+            <div id="plan-chart" class="bar-chart"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-heading"><div><p class="eyebrow">Operacao</p><h2>Status das empresas</h2></div><span data-icon="activity"></span></div>
+            <div id="status-chart" class="donut-list"></div>
+          </article>
+          <article class="panel wide">
+            <div class="panel-heading"><div><p class="eyebrow">BI operacional</p><h2>Insights automaticos</h2></div><span data-icon="brain"></span></div>
+            <div id="admin-insights" class="timeline"></div>
+          </article>
         </div>
+      </section>
 
-        <div class="main-content">
-            <div class="header-dash">
-                <h1>Painel de Controle da Franquia</h1>
-                <button class="btn btn-logout" onclick="sairAdmin()">Bloquear Sistema</button>
-            </div>
-
-            <div id="sec-visao" class="section-panel active">
-                <div class="stats-grid">
-                    <div class="stat-card"><h3>Clientes Ativos</h3><div class="value">0</div></div>
-                    <div class="stat-card"><h3>Robôs Suspensos</h3><div class="value" style="color: var(--danger);">0</div></div>
-                    <div class="stat-card" style="border-top-color: var(--success);"><h3>Receita Mensal (MRR)</h3><div class="value" style="color: var(--success);">R$ 0,00</div></div>
-                </div>
-            </div>
-
-            <div id="sec-clientes" class="section-panel">
-                <div class="box-panel">
-                    <div class="box-header">
-                        <h2>Base de Clientes</h2>
-                        <input type="text" id="busca-cliente" placeholder="🔍 Buscar por nome, e-mail ou instância..." class="form-control" style="flex: 1; max-width: 450px;" onkeyup="renderizarTabela()">
-                        <button class="btn btn-primary" style="width: auto;" onclick="navegarAdmin('sec-novo', document.querySelectorAll('.menu-item')[2])">+ Novo Cliente</button>
-                    </div>
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr><th>ID</th><th>Empresa</th><th>E-mail</th><th>Instância</th><th>Segmento</th><th>Plano</th><th>Status</th><th>Ações</th></tr>
-                            </thead>
-                            <tbody id="tabela-clientes"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="sec-novo" class="section-panel">
-                <div class="box-panel" style="max-width: 800px;">
-                    <div class="box-header"><h2>Cadastrar Nova Empresa</h2></div>
-                    <form id="form-novo-cliente" onsubmit="cadastrarCliente(event)">
-                        <div class="input-group"><label>Nome da Empresa</label><input type="text" name="nome_empresa" class="form-control" required></div>
-                        <div class="row-inputs">
-                            <div class="input-group"><label>E-mail de Acesso</label><input type="email" name="email_cliente" class="form-control" required></div>
-                            <div class="input-group"><label>Instância (Evolution)</label><input type="text" name="nome_instancia" class="form-control" required></div>
-                        </div>
-                        
-                        <!-- CHECKBOXES DE MÓDULOS (UNIFICAÇÃO) -->
-                        <div class="input-group">
-                            <label>Módulos Liberados no Painel do Cliente</label>
-                            <div class="checkbox-grid">
-                                <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="dashboard" checked> 📊 Dashboard</label>
-                                <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="inbox" checked> 💬 Atendimentos</label>
-                                <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="crm"> 🎯 CRM Visual</label>
-                                <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="agenda"> 📅 Agenda (IA)</label>
-                                <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="pedidos"> 🍔 Delivery</label>
-                                <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="automations"> 🤖 Automações</label>
-                                <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="management"> 🏢 Gestão</label>
-                                <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="settings" checked> ⚙️ Configs</label>
-                            </div>
-                        </div>
-
-                        <div class="row-inputs">
-                            <div class="input-group"><label>Plano</label><select name="plano" class="form-control"><option>Supreme Start</option><option>Supreme Pro</option><option>Supreme Elite</option></select></div>
-                            <div class="input-group"><label>Setup (R$)</label><input type="number" step="0.01" name="valor_implantacao" class="form-control" required></div>
-                            <div class="input-group"><label>Mensalidade (R$)</label><input type="number" step="0.01" name="valor_mensalidade" class="form-control" required></div>
-                        </div>
-                        <div class="row-inputs" style="align-items: flex-end;">
-                            <div class="input-group"><label>Senha Inicial</label><input type="text" id="senha-gerada" name="senha" class="form-control" readonly required></div>
-                            <button type="button" class="btn-action" onclick="gerarSenha()">GERAR SENHA</button>
-                            <button type="submit" class="btn-salvar">CRIAR CONTA</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+      <section id="section-companies" class="module">
+        <header class="module-header">
+          <div><p class="eyebrow">Clientes</p><h1>Empresas</h1></div>
+          <button id="new-company" class="btn primary" type="button"><span data-icon="plus"></span> Empresa</button>
+        </header>
+        <div class="toolbar">
+          <input id="company-search" type="search" aria-label="Buscar empresa, e-mail ou responsavel">
+          <select id="company-status-filter">
+            <option value="all">Todos os status</option>
+            <option value="active">Ativas</option>
+            <option value="suspended">Suspensas</option>
+            <option value="cancelled">Canceladas</option>
+          </select>
         </div>
-    </div>
+        <div class="table-panel"><table><thead><tr><th>Empresa</th><th>Plano</th><th>Status</th><th>MRR</th><th>Licenca</th><th>Acoes</th></tr></thead><tbody id="companies-table"></tbody></table></div>
+      </section>
 
-    <!-- MODAL EDIÇÃO -->
-    <div id="modal-edicao">
-        <div class="modal-content">
-            <button type="button" onclick="fecharModalEdicao()" style="position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #fff; font-size: 20px; cursor: pointer;">✖</button>
-            <h2 style="color: var(--primary);">Editar Cliente</h2>
-            <form id="form-editar-cliente" onsubmit="salvarEdicao(event)">
-                <input type="hidden" id="edit-id">
-                <div class="input-group"><label>Nome</label><input type="text" id="edit-nome" class="form-control"></div>
-                <div class="row-inputs">
-                    <div class="input-group"><label>E-mail</label><input type="email" id="edit-email" class="form-control"></div>
-                    <div class="input-group"><label>Instância</label><input type="text" id="edit-instancia" class="form-control"></div>
-                </div>
-                <!-- CHECKBOXES NO MODAL DE EDIÇÃO -->
-                <div class="input-group">
-                    <label>Módulos Liberados</label>
-                    <div class="checkbox-grid">
-                        <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="dashboard"> 📊 Dash</label>
-                        <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="inbox"> 💬 Atendimentos</label>
-                        <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="crm"> 🎯 CRM</label>
-                        <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="agenda"> 📅 Agenda</label>
-                        <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="pedidos"> 🍔 Delivery</label>
-                        <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="automations"> 🤖 Automações</label>
-                        <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="management"> 🏢 Gestão</label>
-                        <label class="check-item"><input type="checkbox" name="modulos_selecionados" value="settings"> ⚙️ Configs</label>
-                    </div>
-                </div>
-                <button type="submit" class="btn-salvar">SALVAR ALTERAÇÕES</button>
-            </form>
+      <section id="section-plans" class="module">
+        <header class="module-header">
+          <div><p class="eyebrow">Comercial</p><h1>Planos e assinaturas</h1></div>
+          <button id="new-plan" class="btn primary" type="button"><span data-icon="plus"></span> Plano</button>
+        </header>
+        <div id="plans-grid" class="cards-grid"></div>
+      </section>
+
+      <section id="section-modules" class="module">
+        <header class="module-header">
+          <div><p class="eyebrow">Marketplace</p><h1>Modulos comercializaveis</h1></div>
+          <button id="new-module" class="btn primary" type="button"><span data-icon="plus"></span> Modulo</button>
+        </header>
+        <div id="modules-grid" class="cards-grid"></div>
+      </section>
+
+      <section id="section-rbac" class="module">
+        <header class="module-header">
+          <div><p class="eyebrow">Governanca</p><h1>Perfis e permissoes</h1></div>
+          <button id="new-role" class="btn primary" type="button"><span data-icon="plus"></span> Perfil</button>
+        </header>
+        <div id="roles-grid" class="cards-grid"></div>
+      </section>
+
+      <section id="section-finance" class="module">
+        <header class="module-header">
+          <div><p class="eyebrow">SaaS Finance</p><h1>Receita, cobrancas e licencas</h1></div>
+        </header>
+        <div id="finance-grid" class="dashboard-grid"></div>
+        <div class="table-panel"><table><thead><tr><th>Empresa</th><th>Mensalidade</th><th>Setup</th><th>Vencimento</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="billing-table"></tbody></table></div>
+      </section>
+
+      <section id="section-audit" class="module">
+        <header class="module-header"><div><p class="eyebrow">Rastreabilidade</p><h1>Central de auditoria</h1></div></header>
+        <div id="audit-log" class="timeline panel"></div>
+      </section>
+
+      <section id="section-security" class="module">
+        <header class="module-header"><div><p class="eyebrow">Seguranca corporativa</p><h1>Politicas e integracoes</h1></div></header>
+        <div class="settings-grid">
+          <article class="panel"><h2>Politicas de sessao</h2><form id="security-form" class="stack"><label class="field">Timeout de sessao em minutos<input id="session-timeout" type="number" min="5" value="240"></label><label class="field">Rate limit por minuto<input id="rate-limit" type="number" min="1" value="60"></label><button class="btn primary" type="submit"><span data-icon="save"></span> Salvar politicas</button></form></article>
+          <article class="panel"><h2>Gateways preparados</h2><p class="muted">Stripe, Mercado Pago e Asaas ficam prontos como adaptadores. As chaves devem ser configuradas no backend seguro.</p></article>
+          <article class="panel"><h2>Integracoes futuras</h2><p class="muted">Supabase, n8n, Chatwoot, provedores de IA e webhooks devem ser ligados pela camada services/integrations.</p></article>
         </div>
-    </div>
+      </section>
+    </main>
+  </div>
 
-    <div id="toast-container"></div>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="adminjava.js"></script>
+  <div id="modal-root" class="modal-root" hidden></div>
+  <div id="toast-root" class="toast-root" aria-live="polite"></div>
+  <script src="admin.js"></script>
 </body>
 </html>
